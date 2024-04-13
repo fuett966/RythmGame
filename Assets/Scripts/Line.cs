@@ -35,10 +35,10 @@ public class Line : MonoBehaviour
             positions.Add(PositionsParent.transform.GetChild(i));
         }
 
-        if (positions.Count / 2 != 0)
+        /*if (positions.Count / 2 != 0)
         {
             positions.Remove(positions[positions.Count - 1]);
-        }
+        }*/
 
         line3 = new List<Transform>();
         RefreshLine3();
@@ -103,6 +103,7 @@ public class Line : MonoBehaviour
             {
                 list.Add(Vector3.Lerp(list2[i], list2[i + 1], value));
             }
+
             Lerp2Line3(list);
         }
         else
@@ -114,28 +115,47 @@ public class Line : MonoBehaviour
     async void PlusValue()
     {
 
-        while (value <= 1)
+        while (value < 1)
         {
             if (_isStopped)
             {
                 return;
             }
-            await Task.Delay(10);
-            sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples / (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (bpm * _step))));
+
+            await Task.Delay(1);
+            sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples /
+                           (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (bpm * _step))));
             value = (sampledtime - (float) _lastInterval);
             Move();
         }
+
         if (Mathf.FloorToInt(sampledtime) != _lastInterval)
         {
             _lastInterval = Mathf.FloorToInt(sampledtime);
         }
+
         firstIndex += 2;
         if (firstIndex >= positions.Count)
+        {
             firstIndex = 0;
+            lastIndex = 1;
+        }
+            
         line3[1].position = positions[firstIndex].position;
-        Vector3 middlePoint = Vector3.Lerp(line3[1].position, line3[3].position, 0.5f);
-        middlePoint.y += Vector3.Distance(line3[1].position, line3[3].position);
-        line3[2].position = middlePoint;
+
+        
+        if (firstIndex == 8 || firstIndex == 12 || firstIndex == 18)
+        {
+            Vector3 middlePoint = Vector3.Lerp(line3[1].position, line3[3].position, 0.5f);
+            line3[2].position = middlePoint;
+        }
+        else
+        {
+            Vector3 middlePoint = Vector3.Lerp(line3[1].position, line3[3].position, 0.5f);
+            middlePoint.y += Vector3.Distance(line3[1].position, line3[3].position);
+            line3[2].position = middlePoint;
+        }
+
 
         MinusValue();
     }
@@ -148,23 +168,45 @@ public class Line : MonoBehaviour
             {
                 return;
             }
-            await Task.Delay(10);
-            sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples / (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (bpm * _step))));
+
+            await Task.Delay(1);
+            sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples /
+                           (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (bpm * _step))));
             value = 1 - (sampledtime - (float) _lastInterval);
             Move();
         }
+
         if (Mathf.FloorToInt(sampledtime) != _lastInterval)
         {
             _lastInterval = Mathf.FloorToInt(sampledtime);
 
         }
+        
+
         lastIndex += 2;
         if (lastIndex >= positions.Count)
+        {
             lastIndex = 1;
-        line3[line3.Count - 1].position = positions[lastIndex].position;
+            firstIndex = 0;
+        }
+            
+
+        line3[3].position = positions[lastIndex].position;
+        /*if (lastIndex == 9 )
+        {
+            _step = 1;
+        }
+        if (lastIndex == 11 )
+        {
+            _step = 0.5f;
+        }*/
+        
+
         Vector3 middlePoint = Vector3.Lerp(line3[1].position, line3[3].position, 0.5f);
         middlePoint.y += Vector3.Distance(line3[1].position, line3[3].position);
         line3[2].position = middlePoint;
+
+
         PlusValue();
     }
 
@@ -174,6 +216,7 @@ public class Line : MonoBehaviour
         {
             RefreshLine3();
         }
+
         LerpLine3();
     }
 }
