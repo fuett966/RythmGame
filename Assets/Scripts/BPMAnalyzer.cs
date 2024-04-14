@@ -8,7 +8,7 @@ public class BPMAnalyzer : MonoBehaviour
     public GameObject loadScreen;
     public BeatManager BeatManager;
     public Line line;
-
+    public LevelGenerator levelGenerator;
 
     public static BPMAnalyzer instance = null;
 
@@ -34,6 +34,7 @@ public class BPMAnalyzer : MonoBehaviour
         
         audioSource.Play();
         BeatManager._bpm = bpm;
+        line.SetPositionsList(levelGenerator.GenerateLevel(audioSource.clip.length,bpm));
         line.bpm = bpm;
         line.StartMove();
         //loadScreen.SetActive(false);

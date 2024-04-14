@@ -29,19 +29,19 @@ public class Line : MonoBehaviour
 
     void Start()
     {
-        positions = new List<Transform>();
+        /*positions = new List<Transform>();
         for (int i = 0; i < PositionsParent.transform.childCount; i++)
         {
             positions.Add(PositionsParent.transform.GetChild(i));
         }
 
-        /*if (positions.Count / 2 != 0)
+        if (positions.Count / 2 != 0)
         {
             positions.Remove(positions[positions.Count - 1]);
-        }*/
+        }
 
         line3 = new List<Transform>();
-        RefreshLine3();
+        RefreshLine3();*/
 
     }
 
@@ -60,8 +60,27 @@ public class Line : MonoBehaviour
 
     }
 
+    public void SetPositionsList(List<Transform> list)
+    {
+        positions = new List<Transform>(list);
+    }
+
     public void StartMove()
     {
+        /*positions = new List<Transform>();
+        for (int i = 0; i < PositionsParent.transform.childCount; i++)
+        {
+            positions.Add(PositionsParent.transform.GetChild(i));
+        }*/
+
+        /*if (positions.Count / 2 != 0)
+        {
+            positions.Remove(positions[positions.Count - 1]);
+        }*/
+
+        line3 = new List<Transform>();
+        RefreshLine3();
+        
         _isStopped = false;
         firstIndex = 0;
         lastIndex = 1;
