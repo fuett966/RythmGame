@@ -28,27 +28,20 @@ public class BPMAnalyzer : MonoBehaviour
 
     public void AnalyzeBPM()
     {
-        //loadScreen.SetActive(true);
         
         bpm = UniBpmAnalyzer.AnalyzeBpm(audioSource.clip);
         
         audioSource.Play();
+        
         BeatManager._bpm = bpm;
+        //line.SetMoveValue(bpm, 0.5f);
         line.SetPositionsList(levelGenerator.GenerateLevel(audioSource.clip.length,bpm));
-        line.bpm = bpm;
+        
         line.StartMove();
-        //loadScreen.SetActive(false);
     }
     public void StopAnalyzeBPM()
     {
-        //loadScreen.SetActive(true);
-        
-        //bpm = UniBpmAnalyzer.AnalyzeBpm(audioSource.clip);
-        
         audioSource.Stop();
-        //BeatManager._bpm = bpm;
-        //line.bpm = bpm;
         line.StopMove();
-        //loadScreen.SetActive(false);
     }
 }

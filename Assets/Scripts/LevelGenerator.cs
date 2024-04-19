@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
@@ -10,31 +11,32 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private GameObject note;
     [SerializeField] private GameObject tube;
     [SerializeField] private GameObject environment;
-    private float _clipDuration; // clip duration * bpm
-    private float _clipBitPerMinute;
     private List<Transform> notes;
-    
-    
 
-    public List<Transform> GenerateLevel(float clipDuration,float clipBPM)
+
+    private void ClearLevel()
     {
-        //list id tube
+        for (int i = 0; i < notes.Count - 1; i++)
+        {
+            Destroy(notes[i].gameObject);
+        }
         
-        
-        int noteCount = (int)((clipBPM/(60*2)) * clipDuration);
-        Debug.Log(noteCount);
+    }
+
+    public List<Transform> GenerateLevel(float clipDuration, float clipBeatPerMinute)
+    {
         if (notes != null && notes.Count != 0)
         {
-            for (int i = 0; i < notes.Count-1; i++)
-            {
-                Destroy(notes[i].gameObject);
-            }
+            ClearLevel();
         }
         notes = new List<Transform>();
+        int noteCount = (int) ((clipBeatPerMinute / (60 * 2)) * clipDuration);
         
+
+
         for (int i = 0; i < noteCount; i++)
         {
-            GameObject noteTemp = Instantiate(note,startPosition,false);
+            GameObject noteTemp = Instantiate(note, startPosition, false);
             notes.Add(noteTemp.transform);
             if (i == 0)
             {
@@ -44,12 +46,12 @@ public class LevelGenerator : MonoBehaviour
 
             if (i % 2 == 1)
             {
-                noteTemp.transform.position = new Vector3(notes[i-1].position.x + Random.Range(1,5),notes[i-1].position.y - Random.Range(1,5),0f); 
+                noteTemp.transform.position = new Vector3(notes[i - 1].position.x + Random.Range(3, 5), notes[i - 1].position.y - Random.Range(1, 4), 0f);
             }
 
             else
             {
-                noteTemp.transform.position = new Vector3(notes[i-1].position.x - Random.Range(1,5),notes[i-1].position.y - Random.Range(1,5),0f); 
+                noteTemp.transform.position = new Vector3(notes[i - 1].position.x - Random.Range(3, 5), notes[i - 1].position.y - Random.Range(2, 4), 0f);
             }
 
         }
@@ -59,5 +61,5 @@ public class LevelGenerator : MonoBehaviour
         return notes;
     }
 
-    
+
 }

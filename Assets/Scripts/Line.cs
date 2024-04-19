@@ -5,59 +5,95 @@ using UnityEngine;
 
 public class Line : MonoBehaviour
 {
-    [SerializeField] public float bpm;
+    [SerializeField] private float _bpm;
+
+    public float BPM
+    {
+        get { return _bpm; }
+        set { _bpm = value; }
+    }
+
     [SerializeField] private float _step = 1f;
 
-    public float sampledtime;
-    public int _lastInterval;
+    [SerializeField] private float _sampledtime;
+    [SerializeField] private int _lastInterval;
 
 
     [Range(0, 1)] [SerializeField] private float value;
 
-    private List<Transform> line3;
+    [SerializeField] private List<Transform> _curve;
 
-    private int countLine3;
-    private Vector3 point1;
 
-    [SerializeField] private Transform object3;
-    [SerializeField] private Transform parentLine3;
-    [SerializeField] private GameObject PositionsParent;
+    [SerializeField] private Transform _movableObject;
+
+
     private List<Transform> positions;
     private bool _isStopped;
+
     private int firstIndex = 0;
     private int lastIndex = 1;
 
-    void Start()
+    public void StartMove()
     {
-        /*positions = new List<Transform>();
-        for (int i = 0; i < PositionsParent.transform.childCount; i++)
+
+        _isStopped = false;
+        firstIndex = 0;
+        lastIndex = 1;
+
+        _curve[1].position = positions[firstIndex].position;
+        _curve[3].position = positions[lastIndex].position;
+        _curve[2].position = CalculateMiddlePoint(0.5f, 4f);
+        
+        _lastInterval = 0;
+        _sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples / (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (_bpm * _step))));
+        
+        value = 0;
+        PlusValue();
+    }
+
+    public void ContinueMove()
+    {
+        _isStopped = false;
+        
+        _curve[1].position = positions[firstIndex].position;
+        _curve[3].position = positions[lastIndex].position;
+        _curve[2].position = CalculateMiddlePoint(0.5f, 4f);
+
+        
+        if (firstIndex < lastIndex)
         {
-            positions.Add(PositionsParent.transform.GetChild(i));
+            MinusValue();
         }
-
-        if (positions.Count / 2 != 0)
+        else
         {
-            positions.Remove(positions[positions.Count - 1]);
+            PlusValue();
         }
-
-        line3 = new List<Transform>();
-        RefreshLine3();*/
-
     }
 
     public void StopMove()
     {
         _isStopped = true;
-        firstIndex = 0;
-        lastIndex = 1;
-        line3[1].position = positions[firstIndex].position;
-        line3[3].position = positions[lastIndex].position;
-        _lastInterval = 0;
-        Vector3 middlePoint = Vector3.Lerp(line3[1].position, line3[3].position, 0.5f);
-        middlePoint.y += Vector3.Distance(line3[1].position, line3[3].position);
-        line3[2].position = middlePoint;
-        RefreshLine3();
 
+        /*firstIndex = 0;
+        lastIndex = 1;
+
+        _curve[1].position = positions[firstIndex].position;
+        _curve[3].position = positions[lastIndex].position;
+
+        _lastInterval = 0;
+
+        _curve[2].position = CalculateMiddlePoint(0.5f, 4f);
+
+        value = 0;*/
+
+    }
+
+
+    private Vector3 CalculateMiddlePoint(float valueBetween, float height)
+    {
+        Vector3 middlePoint = Vector3.Lerp(_curve[1].position, _curve[3].position, valueBetween);
+        middlePoint.y += height;
+        return middlePoint;
     }
 
     public void SetPositionsList(List<Transform> list)
@@ -65,55 +101,115 @@ public class Line : MonoBehaviour
         positions = new List<Transform>(list);
     }
 
-    public void StartMove()
+
+    async void PlusValue()
     {
-        /*positions = new List<Transform>();
-        for (int i = 0; i < PositionsParent.transform.childCount; i++)
+        if (_isStopped)
         {
-            positions.Add(PositionsParent.transform.GetChild(i));
-        }*/
+            _isStopped = false;
+            return;
+        }
 
-        /*if (positions.Count / 2 != 0)
+        if (firstIndex == 6 || firstIndex == 14 || firstIndex == 20 || firstIndex == 28)
         {
-            positions.Remove(positions[positions.Count - 1]);
-        }*/
+            _step = 1f;
+        }
 
-        line3 = new List<Transform>();
-        RefreshLine3();
+        _sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples /
+                        (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (_bpm * _step))));
+        if (Mathf.FloorToInt(_sampledtime) != _lastInterval)
+        {
+            _lastInterval = Mathf.FloorToInt(_sampledtime);
+        }
+
+        while (value < 1)
+        {
+            if (_isStopped)
+            {
+                _isStopped = false;
+                return;
+            }
+            await Task.Delay(1);
+            _sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples /
+                            (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (_bpm * _step))));
+            value = _sampledtime - _lastInterval;
+            Move();
+        }
+
+
+        firstIndex += 2;
+        if (firstIndex >= positions.Count)
+        {
+            _isStopped = true;
+        }
+
+
+        _curve[1].position = positions[firstIndex].position;
+        _curve[2].position = CalculateMiddlePoint(0.5f, 4f);
+
+        MinusValue();
+    }
+
+    async void MinusValue()
+    {
+        if (_isStopped)
+        {
+            _isStopped = false;
+            return;
+        }
+
+        if (lastIndex == 9 || lastIndex == 17 || lastIndex == 23 || lastIndex == 35)
+        {
+            _step = 0.5f;
+        }
+
+        _sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples /
+                        (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (_bpm * _step))));
+        if (Mathf.FloorToInt(_sampledtime) != _lastInterval)
+        {
+            _lastInterval = Mathf.FloorToInt(_sampledtime);
+        }
+
+        while (value >= 0)
+        {
+            if (_isStopped)
+            {
+                _isStopped = false;
+                return;
+            }
+
+            await Task.Delay(1);
+
+            _sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples /
+                            (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (_bpm * _step))));
+            value = 1 - (_sampledtime - _lastInterval);
+            Move();
+        }
         
-        _isStopped = false;
-        firstIndex = 0;
-        lastIndex = 1;
-        line3[1].position = positions[firstIndex].position;
-        line3[3].position = positions[lastIndex].position;
-        _lastInterval = 0;
-        Vector3 middlePoint = Vector3.Lerp(line3[1].position, line3[3].position, 0.5f);
-        middlePoint.y += Vector3.Distance(line3[1].position, line3[3].position);
-        line3[2].position = middlePoint;
+        lastIndex += 2;
+        if (lastIndex >= positions.Count)
+        {
+            _isStopped = true;
+        }
+        _curve[3].position = positions[lastIndex].position;
+        _curve[2].position = CalculateMiddlePoint(0.5f, 4f);
 
-        value = 0;
-        RefreshLine3();
         PlusValue();
     }
 
-    void RefreshLine3()
-    {
-        parentLine3.GetComponentsInChildren<Transform>(line3);
-        countLine3 = line3.Count;
-    }
-
-    void LerpLine3()
+    private void Move()
     {
         List<Vector3> list = new List<Vector3>();
-        for (int i = 1; i < line3.Count - 1; i++)
+        for (int i = 1; i < _curve.Count - 1; i++)
         {
-            list.Add(Vector3.Lerp(line3[i].position, line3[i + 1].position, value));
+            list.Add(Vector3.Lerp(_curve[i].position, _curve[i + 1].position, value));
         }
 
-        Lerp2Line3(list);
+        LerpLine(list);
     }
 
-    void Lerp2Line3(List<Vector3> list2)
+
+    private void LerpLine(List<Vector3> list2)
     {
         if (list2.Count > 2)
         {
@@ -123,119 +219,11 @@ public class Line : MonoBehaviour
                 list.Add(Vector3.Lerp(list2[i], list2[i + 1], value));
             }
 
-            Lerp2Line3(list);
+            LerpLine(list);
         }
         else
         {
-            object3.position = Vector3.Lerp(list2[0], list2[1], value);
+            _movableObject.position = Vector3.Lerp(list2[0], list2[1], value);
         }
-    }
-
-    async void PlusValue()
-    {
-
-        while (value < 1)
-        {
-            if (_isStopped)
-            {
-                return;
-            }
-
-            await Task.Delay(1);
-            sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples /
-                           (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (bpm * _step))));
-            value = (sampledtime - (float) _lastInterval);
-            Move();
-        }
-
-        if (Mathf.FloorToInt(sampledtime) != _lastInterval)
-        {
-            _lastInterval = Mathf.FloorToInt(sampledtime);
-        }
-
-        firstIndex += 2;
-        if (firstIndex >= positions.Count)
-        {
-            firstIndex = 0;
-            lastIndex = 1;
-        }
-            
-        line3[1].position = positions[firstIndex].position;
-
-        
-        if (firstIndex == 8 || firstIndex == 12 || firstIndex == 18)
-        {
-            Vector3 middlePoint = Vector3.Lerp(line3[1].position, line3[3].position, 0.5f);
-            line3[2].position = middlePoint;
-        }
-        else
-        {
-            Vector3 middlePoint = Vector3.Lerp(line3[1].position, line3[3].position, 0.5f);
-            middlePoint.y += Vector3.Distance(line3[1].position, line3[3].position);
-            line3[2].position = middlePoint;
-        }
-
-
-        MinusValue();
-    }
-
-    async void MinusValue()
-    {
-        while (value >= 0)
-        {
-            if (_isStopped)
-            {
-                return;
-            }
-
-            await Task.Delay(1);
-            sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples /
-                           (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (bpm * _step))));
-            value = 1 - (sampledtime - (float) _lastInterval);
-            Move();
-        }
-
-        if (Mathf.FloorToInt(sampledtime) != _lastInterval)
-        {
-            _lastInterval = Mathf.FloorToInt(sampledtime);
-
-        }
-        
-
-        lastIndex += 2;
-        if (lastIndex >= positions.Count)
-        {
-            lastIndex = 1;
-            firstIndex = 0;
-        }
-            
-
-        line3[3].position = positions[lastIndex].position;
-        /*if (lastIndex == 9 )
-        {
-            _step = 1;
-        }
-        if (lastIndex == 11 )
-        {
-            _step = 0.5f;
-        }*/
-        
-
-        Vector3 middlePoint = Vector3.Lerp(line3[1].position, line3[3].position, 0.5f);
-        middlePoint.y += Vector3.Distance(line3[1].position, line3[3].position);
-        line3[2].position = middlePoint;
-
-
-        PlusValue();
-    }
-
-    void Move()
-    {
-        if (parentLine3.childCount != countLine3 - 1)
-        {
-            RefreshLine3();
-        }
-
-        LerpLine3();
     }
 }
