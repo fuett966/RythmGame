@@ -15,6 +15,8 @@ public class BeatManager : MonoBehaviour
 
     private void Update()
     {
+        if(_audioSource.clip == null)
+            return;
         foreach (Intervals interval in _intervals)
         {
             sampledtime = (_audioSource.timeSamples /

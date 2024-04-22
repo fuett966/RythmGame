@@ -1,0 +1,26 @@
+ManifestFileVersion: 0
+CRC: 1965999074
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 69636749ce83d6bb76f8292a2c098433
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 9a2ca7bdbd1871f7131daf57de908e0c
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 69636749ce83d6bb76f8292a2c098433
+HashAppended: 0
+ClassTypes:
+- Class: 83
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Audio/approaching-storm.mp3
+- Assets/Audio/Angry Birds Theme Song Extended.mp3
+- Assets/Audio/Hans Zimmer - Travel South.mp3
+- Assets/Audio/Lady Gaga - Poker Face.mp3
+- Assets/Audio/clock-128-bpm-quarter-speed-103179 - Copy.mp3
+- "Assets/Audio/\u0442\u0440\u0438\u043D\u0430\u0434\u0446\u0430\u0442\u044C \u043A\u0430\u0440\u0430\u0442
+  - \u043F\u043E\u0434\u0440\u0443\u0436\u043A\u0430.mp3"
+Dependencies: []

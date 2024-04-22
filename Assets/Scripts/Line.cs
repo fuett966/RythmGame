@@ -110,10 +110,10 @@ public class Line : MonoBehaviour
             return;
         }
 
-        if (firstIndex == 6 || firstIndex == 14 || firstIndex == 20 || firstIndex == 28)
+        /*if (firstIndex == 6 || firstIndex == 14 || firstIndex == 20 || firstIndex == 28)
         {
             _step = 1f;
-        }
+        }*/
 
         _sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples /
                         (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (_bpm * _step))));
@@ -158,10 +158,10 @@ public class Line : MonoBehaviour
             return;
         }
 
-        if (lastIndex == 9 || lastIndex == 17 || lastIndex == 23 || lastIndex == 35)
+        /*if (lastIndex == 9 || lastIndex == 17 || lastIndex == 23 || lastIndex == 35)
         {
             _step = 0.5f;
-        }
+        }*/
 
         _sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples /
                         (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (_bpm * _step))));
