@@ -45,7 +45,7 @@ public class Line : MonoBehaviour
         _curve[2].position = CalculateMiddlePoint(0.5f, 4f);
         
         _lastInterval = 0;
-        _sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples / (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (_bpm * _step))));
+        _sampledtime = (GameManager.instance.AudioSource.timeSamples / (GameManager.instance.AudioSource.clip.frequency * (60f / (_bpm * _step))));
         
         value = 0;
         PlusValue();
@@ -115,8 +115,8 @@ public class Line : MonoBehaviour
             _step = 1f;
         }*/
 
-        _sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples /
-                        (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (_bpm * _step))));
+        _sampledtime = (GameManager.instance.AudioSource.timeSamples /
+                        (GameManager.instance.AudioSource.clip.frequency * (60f / (_bpm * _step))));
         if (Mathf.FloorToInt(_sampledtime) != _lastInterval)
         {
             _lastInterval = Mathf.FloorToInt(_sampledtime);
@@ -130,8 +130,8 @@ public class Line : MonoBehaviour
                 return;
             }
             await Task.Delay(1);
-            _sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples /
-                            (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (_bpm * _step))));
+            _sampledtime = (GameManager.instance.AudioSource.timeSamples /
+                            (GameManager.instance.AudioSource.clip.frequency * (60f / (_bpm * _step))));
             value = _sampledtime - _lastInterval;
             Move();
         }
@@ -163,8 +163,8 @@ public class Line : MonoBehaviour
             _step = 0.5f;
         }*/
 
-        _sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples /
-                        (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (_bpm * _step))));
+        _sampledtime = (GameManager.instance.AudioSource.timeSamples /
+                        (GameManager.instance.AudioSource.clip.frequency * (60f / (_bpm * _step))));
         if (Mathf.FloorToInt(_sampledtime) != _lastInterval)
         {
             _lastInterval = Mathf.FloorToInt(_sampledtime);
@@ -180,8 +180,8 @@ public class Line : MonoBehaviour
 
             await Task.Delay(1);
 
-            _sampledtime = (BPMAnalyzer.instance.audioSource.timeSamples /
-                            (BPMAnalyzer.instance.audioSource.clip.frequency * (60f / (_bpm * _step))));
+            _sampledtime = (GameManager.instance.AudioSource.timeSamples /
+                            (GameManager.instance.AudioSource.clip.frequency * (60f / (_bpm * _step))));
             value = 1 - (_sampledtime - _lastInterval);
             Move();
         }

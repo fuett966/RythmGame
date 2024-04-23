@@ -23,17 +23,17 @@ public class LevelGenerator : MonoBehaviour
         
     }
 
-    public List<Transform> GenerateLevel(float clipDuration, float clipBeatPerMinute)
+    public List<Transform> GenerateLevel(float clipDuration, float clipBeatPerMinute, float stepModify)
     {
         if (notes != null && notes.Count != 0)
         {
             ClearLevel();
         }
         notes = new List<Transform>();
-        int noteCount = (int) ((clipBeatPerMinute / (60 * 2)) * clipDuration);
+        int noteCount = (int) ((clipBeatPerMinute / (60 * stepModify)) * clipDuration)+1;
+        Debug.Log("Clip duration "+ clipDuration);
+        Debug.Log("Note count "+ noteCount);
         
-
-
         for (int i = 0; i < noteCount; i++)
         {
             GameObject noteTemp = Instantiate(note, startPosition, false);
