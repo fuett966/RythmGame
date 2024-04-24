@@ -76,6 +76,7 @@ public class UIManager : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
+        SetAudioInfo();
     }
 
     public void ChangeScoreText(int score)

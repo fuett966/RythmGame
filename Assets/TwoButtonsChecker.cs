@@ -11,8 +11,8 @@ public class TwoButtonsChecker : MonoBehaviour
     [SerializeField] private Button _disableButton;
 
     [Header("Buttons")]
-    [SerializeField] private Color _selectedColor;
-    [SerializeField] private Color _unselectedColor;
+    [SerializeField] private Sprite _selectedColor;
+    [SerializeField] private Sprite _unselectedColor;
     
     [SerializeField] private bool _isEnabled;
 
@@ -44,12 +44,14 @@ public class TwoButtonsChecker : MonoBehaviour
         }
     }
 
-    private void SetButtonColors(Button button, Color color)
+    private void SetButtonColors(Button button, Sprite color)
     {
-        ColorBlock colors = button.colors;
+        button.GetComponent<Image>().sprite = color;
+        /*ColorBlock colors = button.colors;
         colors.normalColor = color;
         colors.selectedColor = color;
-        button.colors = colors;
+        button.colors = colors;*/
+
     }
     
 }
