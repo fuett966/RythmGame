@@ -7,6 +7,6 @@ public class SongsPanel : MonoBehaviour
 {
     private void OnEnable()
     {
-        UIManager.instance.SetAudioInfo();
+        
     }
 }

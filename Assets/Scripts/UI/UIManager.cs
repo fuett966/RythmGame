@@ -4,6 +4,7 @@ using System.IO;
 using SimpleFileBrowser;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -16,6 +17,18 @@ public class UIManager : MonoBehaviour
     
     [SerializeField] 
     private TextMeshProUGUI _timerToStartGameText;
+    [SerializeField] 
+    private TwoButtonsChecker _autoPanel;
+    [SerializeField] 
+    private TwoButtonsCheckersContainer _heroesPanel;
+    [SerializeField] 
+    private GameObject _heroesEnablingPanel;
+    [SerializeField] 
+    private Button _startSongButton;
+    [SerializeField] 
+    private Button _addNewSongButton;
+    
+    
     
     [Header("Parent Objects")] 
     [SerializeField]
@@ -25,7 +38,7 @@ public class UIManager : MonoBehaviour
     
     [Header("Text for UI")]
     [SerializeField]
-    private string _scoreString = "Очки: ";
+    private string _scoreString = "";
     
     
     
@@ -35,11 +48,17 @@ public class UIManager : MonoBehaviour
     private GameObject _songContentPrefab;
 
 
-    [SerializeField]private List<SongName> _songObjects;
+    private List<SongName> _songObjects;
 
 
 
+    [Header("Bools for debug")] 
+    [SerializeField]
+    private bool _isAutoGame;
+    [SerializeField]
+    private bool _isUseHeroes;
 
+    [SerializeField] private HeroesType _heroesType;
 
 
 
@@ -57,6 +76,7 @@ public class UIManager : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
+        SetAudioInfo();
     }
 
     public void ChangeScoreText(int score)
@@ -67,7 +87,19 @@ public class UIManager : MonoBehaviour
     {
         _timerToStartGameText.text = time;
     }
-    
+
+    public void SetAutoGame(bool value)
+    {
+        _isAutoGame = value;
+    }
+    public void SetUseHeroes(bool value)
+    {
+        _isUseHeroes = value;
+    }
+    public void SetHeroesType(HeroesType type)
+    {
+        _heroesType = type;
+    }
     
 
     public void SetAudioInfo()
@@ -103,7 +135,9 @@ public class UIManager : MonoBehaviour
             
             GameObject song = Instantiate(_songContentPrefab);
             song.transform.SetParent(_songsContent.transform);
+            
             _songObjects.Add(song.GetComponent<SongName>());
+            
             song.GetComponent<SongName>().ChangeText(Path.GetFileName(files[i]));
             song.GetComponent<SongName>().SetName(Path.GetFileName(files[i]));
             song.GetComponent<SongName>().SetPath(files[i]);
@@ -157,5 +191,13 @@ public class UIManager : MonoBehaviour
                 songObject.SetUnselected();
             }
         }
+    }
+    
+    public enum HeroesType
+    {
+        Dota,
+        AngryBirds,
+        GenshinImpact,
+        BrawlStars
     }
 }

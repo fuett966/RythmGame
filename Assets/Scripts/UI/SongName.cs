@@ -52,19 +52,19 @@ public class SongName : MonoBehaviour
             UIManager.instance.UnselectAllSelectedSongName();
         }
         isSelected = true;
-        Button button = this.GetComponent<Button>();
+        /*Button button = this.GetComponent<Button>();
         ColorBlock colors = button.colors;
         colors.normalColor = _selectedColor;
         colors.selectedColor = _selectedColor;
-        button.colors = colors;
+        button.colors = colors;*/
     }
     public void SetUnselected()
     {
-        isSelected = false;
+        /*isSelected = false;
         Button button = this.GetComponent<Button>();
         ColorBlock colors = button.colors;
         colors.normalColor = _normalColor;
         colors.selectedColor = _normalColor;
-        button.colors = colors;
+        button.colors = colors;*/
     }
 }
