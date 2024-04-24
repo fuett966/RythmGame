@@ -10,13 +10,11 @@ public class UIManager : MonoBehaviour
 {
     [Header("UI")]
     [SerializeField]
+    private GameObject _loadingScreen;
+    [SerializeField]
     private GameObject _songsPanel;
 
-    [SerializeField] 
-    private TextMeshProUGUI _scoreText;
     
-    [SerializeField] 
-    private TextMeshProUGUI _timerToStartGameText;
     [SerializeField] 
     private TwoButtonsChecker _autoPanel;
     [SerializeField] 
@@ -27,8 +25,18 @@ public class UIManager : MonoBehaviour
     private Button _startSongButton;
     [SerializeField] 
     private Button _addNewSongButton;
+
+    [Header("INGAMEUI")]
     
     
+    [SerializeField] private Image _mainButton;
+    [SerializeField] private GameObject _pauseButton;
+    [SerializeField] private GameObject _returnToMenuButton;
+    [SerializeField] private TextMeshProUGUI _scoreText;
+    [SerializeField] private TextMeshProUGUI _timerToStartGameText;
+    [Header("InGameMainButton")]
+    [SerializeField] private Sprite _mainEnabled;
+    [SerializeField] private Sprite _mainDisabled;
     
     [Header("Parent Objects")] 
     [SerializeField]
@@ -54,11 +62,11 @@ public class UIManager : MonoBehaviour
 
     [Header("Bools for debug")] 
     [SerializeField]
-    private bool _isAutoGame;
+    public bool _isAutoGame;
     [SerializeField]
-    private bool _isUseHeroes;
+    public bool _isUseHeroes;
 
-    [SerializeField] private HeroesType _heroesType;
+    [SerializeField] public HeroesType _heroesType;
 
 
 
@@ -77,6 +85,28 @@ public class UIManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
         SetAudioInfo();
+    }
+
+    public void SwitchActiveMainbutton()
+    {
+        if (_pauseButton.activeSelf || _returnToMenuButton.activeSelf)
+        {
+            _pauseButton.SetActive(false);
+            _returnToMenuButton.SetActive(false);
+            _mainButton.sprite = _mainDisabled;
+        }
+        else
+        {
+            _pauseButton.SetActive(true);
+            _returnToMenuButton.SetActive(true);
+            _mainButton.sprite = _mainEnabled;
+        }
+    }
+    
+
+    public void SetStartPlayButtonActive(bool value)
+    {
+        _startSongButton.GetComponent<Button>().interactable = value;
     }
 
     public void ChangeScoreText(int score)
@@ -99,6 +129,11 @@ public class UIManager : MonoBehaviour
     public void SetHeroesType(HeroesType type)
     {
         _heroesType = type;
+    }
+
+    public void SetActiveLoadScreen(bool value)
+    {
+        _loadingScreen.SetActive(value);
     }
     
 
@@ -191,11 +226,12 @@ public class UIManager : MonoBehaviour
                 songObject.SetUnselected();
             }
         }
+        SetStartPlayButtonActive(false);
     }
     
     public enum HeroesType
     {
-        Dota,
+        Dota2,
         AngryBirds,
         GenshinImpact,
         BrawlStars

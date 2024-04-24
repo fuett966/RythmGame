@@ -305,7 +305,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 2
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -330,7 +330,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6485016492835180181}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3955913660078324993}
+        m_TargetAssemblyTypeName: SongName, Assembly-CSharp
+        m_MethodName: SetSelected
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &3955913660078324993
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -346,8 +358,9 @@ MonoBehaviour:
   _text: {fileID: 7264866623049491407}
   _fileName: 
   _path: 
-  _selectedColor: {r: 0.5443797, g: 0.06132078, b: 1, a: 1}
-  _normalColor: {r: 1, g: 1, b: 1, a: 1}
+  _image: {fileID: 6485016492835180181}
+  _selectedColor: {fileID: 21300000, guid: 71a25090083efd74a945d295bd7b3a53, type: 3}
+  _normalColor: {fileID: 21300000, guid: 68c88d1dd5cd61a489a349512941faf1, type: 3}
   isSelected: 0
 --- !u!1 &8799139216779298602
 GameObject:

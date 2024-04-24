@@ -16,6 +16,10 @@ public class TwoButtonsChecker : MonoBehaviour
     
     [SerializeField] private bool _isEnabled;
 
+    [Header("Other")] 
+    public bool IsHeroesType = false;
+    public TwoButtonsCheckersContainer parentObj;
+    public UIManager.HeroesType type;
     private void Start()
     {
         IsEnabled = _isEnabled;
@@ -33,6 +37,10 @@ public class TwoButtonsChecker : MonoBehaviour
             {
                 SetButtonColors(_enableButton, _selectedColor);
                 SetButtonColors(_disableButton, _unselectedColor);
+                if (IsHeroesType)
+                {
+                    parentObj.UpdateTypeHeroes(type);
+                }
             }
             else
             {
@@ -40,6 +48,7 @@ public class TwoButtonsChecker : MonoBehaviour
                 SetButtonColors(_disableButton, _selectedColor);
             }
 
+            
             _isEnabled = value;
         }
     }
