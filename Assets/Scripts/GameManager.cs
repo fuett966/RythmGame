@@ -7,23 +7,18 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 
-    [Header("Values")] 
-    private float _bpm;
+    [Header("Values")] private float _bpm;
     public float BPM => _bpm;
 
     private int _score = 0;
     public int Score => _score;
 
 
-    [Header("Objects")]
-    
-    [SerializeField] private AudioSource _audioSource;
+    [Header("Objects")] [SerializeField] private AudioSource _audioSource;
     public AudioSource AudioSource => _audioSource;
 
 
-    [Header("Scripts")]
-    
-    [SerializeField] private AudioVisualizer _audioVisualizer;
+    [Header("Scripts")] [SerializeField] private AudioVisualizer _audioVisualizer;
     [SerializeField] private BPMAnalyzer _bpmAnalyzer;
     [SerializeField] private LevelGenerator _levelGenerator;
     [SerializeField] private Line _line;
@@ -31,14 +26,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private MusicFileBrowser _musicFileBrowser;
 
 
-    [Header("Positions")] 
-    
-    [SerializeField] private Transform _startPosition;
+    [Header("Positions")] [SerializeField] private Transform _startPosition;
 
 
-    [Header("Bools for debug")] 
-    
-    [SerializeField] public bool _audioAnalyzed;
+    [Header("Bools for debug")] [SerializeField]
+    public bool _audioAnalyzed;
+
     [SerializeField] public bool _levelGenerated;
     [SerializeField] public bool _gameStarted;
     [SerializeField] public UIManager.HeroesType _heroesType;
@@ -63,6 +56,22 @@ public class GameManager : MonoBehaviour
     {
         _bpm = UniBpmAnalyzer.AnalyzeBpm(_audioSource.clip);
         _beatManager._bpm = _bpm;
+        if (_bpm > 100)
+        {
+            _line._step = 1f;
+        }
+        else if (_bpm > 200)
+        {
+            _line._step = 0.5f;
+        }
+        else if(_bpm > 265)
+        {
+            _line._step = 0.25f;
+        }
+        else if(_bpm > 340)
+        {
+            _line._step = 0.125f;
+        }
         _line.BPM = _bpm;
         _audioAnalyzed = true;
     }
@@ -75,12 +84,14 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        _line.SetPositionsList(_levelGenerator.GenerateLevel(_audioSource.clip.length, _bpm,0.5f,UIManager.instance._isUseHeroes,_heroesType));
+        _line.SetPositionsList(_levelGenerator.GenerateLevel(_audioSource.clip.length, _bpm, _line._step,
+            UIManager.instance._isUseHeroes, _heroesType));
         _levelGenerated = true;
     }
 
     public void StartPlay()
     {
+        UIManager.instance._mainButton.gameObject.SetActive(false);
         StartTimer(3);
     }
 
@@ -94,21 +105,37 @@ public class GameManager : MonoBehaviour
 
         UIManager.instance.SetActiveLoadScreen(true);
         UIManager.instance.SetSelectedSong();
+        
         _gameStarted = true;
-        while ( !_audioAnalyzed || !_levelGenerated)
+        while (!_audioAnalyzed || !_levelGenerated)
         {
             await Task.Delay(1000);
-            //UIManager.instance.ChangeTimerText(tempTime.ToString());
+        }
+        float tempTime = timeAwait;
+        while (tempTime > 0)
+        {
+            await Task.Delay(1000);
+            tempTime -= 1;
+        }
+        if (UIManager.instance._isAutoGame)
+        {
+            UIManager.instance._scoreText.text = "";
+            UIManager.instance._scoreButton.SetActive(false);
+        }
+        else
+        {
+            UIManager.instance._scoreText.text = "0";
+            UIManager.instance._scoreButton.SetActive(true);
         }
 
-        //UIManager.instance.ChangeTimerText("");
         UIManager.instance.SetActiveLoadScreen(false);
         StartGame();
     }
+
     private async void StartTimerInGame(float timeAwait)
     {
         float tempTime = timeAwait;
-        while ( tempTime>0)
+        while (tempTime > 0)
         {
             await Task.Delay(1000);
             tempTime -= 1;
@@ -116,8 +143,11 @@ public class GameManager : MonoBehaviour
         }
 
         UIManager.instance.ChangeTimerText("");
+
+        
         _audioSource.Play();
         _line.StartMove();
+        UIManager.instance._mainButton.gameObject.SetActive(true);
     }
 
     private void StartGame()
@@ -127,6 +157,7 @@ public class GameManager : MonoBehaviour
             Debug.LogError("Level not generated!");
             return;
         }
+
         StartTimerInGame(3);
     }
 
@@ -148,9 +179,24 @@ public class GameManager : MonoBehaviour
         {
             _audioSource.Play();
         }
-        
-            //_line.StopMove();
-        
+
+        //_line.StopMove();
+
+    }
+
+    public void AddScore()
+    {
+        if (_line.isTact)
+        {
+            _score += 1;
+            UIManager.instance._scoreText.text = _score.ToString();
+            _line.isTact = false;
+        }
+        else
+        {
+
+        }
+
     }
 
     public void ContinueGame()
@@ -163,6 +209,25 @@ public class GameManager : MonoBehaviour
     public void SetAudioFromPath(string path)
     {
         StartCoroutine(LoadAudioClip(path));
+    }
+
+    public void SetAudioFromClip(AudioClip clip)
+    {
+        _audioSource.clip = clip;
+        AnalyzeBPM();
+        GenerateLevel();
+        Debug.Log("Music loading success");
+        
+    }
+
+    public void ResetGame()
+    {
+        _levelGenerator.sphere.transform.position = _levelGenerator.startPosition.position;
+        _line.ResetValues();
+        _gameStarted = false;
+        _audioAnalyzed = false;
+        _levelGenerated = false;
+
     }
 
     IEnumerator LoadAudioClip(string filePath)

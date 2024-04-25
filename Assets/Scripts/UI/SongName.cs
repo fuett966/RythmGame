@@ -10,7 +10,7 @@ public class SongName : MonoBehaviour
     
     [SerializeField] private string _fileName;
     [SerializeField] private string _path;
-
+    [SerializeField] public AudioClip _clip;
     [SerializeField] private Image _image;
     
     [SerializeField] private Sprite _selectedColor;
@@ -64,6 +64,7 @@ public class SongName : MonoBehaviour
     public void SetUnselected()
     {
         _image.sprite = _normalColor;
+        isSelected = false;
         /*isSelected = false;
         Button button = this.GetComponent<Button>();
         ColorBlock colors = button.colors;

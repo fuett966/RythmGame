@@ -13,7 +13,7 @@ public class Line : MonoBehaviour
         set { _bpm = value; }
     }
 
-    [SerializeField] private float _step = 1f;
+    [SerializeField] public float _step = 1f;
 
     [SerializeField] private float _sampledtime;
     [SerializeField] private int _lastInterval;
@@ -25,7 +25,8 @@ public class Line : MonoBehaviour
 
 
     [SerializeField] private Transform _movableObject;
-
+    public bool isTact = false;
+    public float timerTemp=0.2f;
 
     private List<Transform> positions;
     private bool _isStopped;
@@ -87,6 +88,22 @@ public class Line : MonoBehaviour
         value = 0;*/
 
     }
+    public void ResetValues()
+    {
+        _isStopped = true;
+
+        firstIndex = 0;
+        lastIndex = 1;
+
+        _curve[1].position = positions[firstIndex].position;
+        _curve[3].position = positions[lastIndex].position;
+
+        _lastInterval = 0;
+
+        _curve[2].position = CalculateMiddlePoint(0.5f, 4f);
+
+        value = 0;
+    }
 
 
     private Vector3 CalculateMiddlePoint(float valueBetween, float height)
@@ -121,7 +138,7 @@ public class Line : MonoBehaviour
         {
             _lastInterval = Mathf.FloorToInt(_sampledtime);
         }
-
+        bool tempIsTuct = false;
         while (value < 1)
         {
             if (_isStopped)
@@ -134,6 +151,14 @@ public class Line : MonoBehaviour
                             (GameManager.instance.AudioSource.clip.frequency * (60f / (_bpm * _step))));
             value = _sampledtime - _lastInterval;
             Move();
+            if ((value<0.2f || value>0.8f) && !tempIsTuct)
+            {
+                isTact = true;
+            }
+            else
+            {
+                isTact = false;
+            }
         }
 
 
@@ -145,7 +170,7 @@ public class Line : MonoBehaviour
 
 
         _curve[1].position = positions[firstIndex].position;
-        _curve[2].position = CalculateMiddlePoint(0.5f, 4f);
+        _curve[2].position = CalculateMiddlePoint(0.5f, 6f);
 
         MinusValue();
     }
@@ -169,9 +194,10 @@ public class Line : MonoBehaviour
         {
             _lastInterval = Mathf.FloorToInt(_sampledtime);
         }
-
+        bool tempIsTuct = false;
         while (value >= 0)
         {
+            
             if (_isStopped)
             {
                 _isStopped = false;
@@ -184,6 +210,15 @@ public class Line : MonoBehaviour
                             (GameManager.instance.AudioSource.clip.frequency * (60f / (_bpm * _step))));
             value = 1 - (_sampledtime - _lastInterval);
             Move();
+            if ((value<0.2f || value>0.8f) && !tempIsTuct)
+            {
+                isTact = true;
+                tempIsTuct = true;
+            }
+            else
+            {
+                isTact = false;
+            }
         }
         
         lastIndex += 2;
@@ -192,7 +227,7 @@ public class Line : MonoBehaviour
             _isStopped = true;
         }
         _curve[3].position = positions[lastIndex].position;
-        _curve[2].position = CalculateMiddlePoint(0.5f, 4f);
+        _curve[2].position = CalculateMiddlePoint(0.5f, 6f);
 
         PlusValue();
     }

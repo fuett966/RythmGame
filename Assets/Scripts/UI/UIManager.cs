@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -28,11 +29,11 @@ public class UIManager : MonoBehaviour
 
     [Header("INGAMEUI")]
     
-    
-    [SerializeField] private Image _mainButton;
+    [SerializeField] public GameObject _scoreButton;
+    [SerializeField] public Image _mainButton;
     [SerializeField] private GameObject _pauseButton;
     [SerializeField] private GameObject _returnToMenuButton;
-    [SerializeField] private TextMeshProUGUI _scoreText;
+    [SerializeField] public TextMeshProUGUI _scoreText;
     [SerializeField] private TextMeshProUGUI _timerToStartGameText;
     [Header("InGameMainButton")]
     [SerializeField] private Sprite _mainEnabled;
@@ -135,7 +136,19 @@ public class UIManager : MonoBehaviour
     {
         _loadingScreen.SetActive(value);
     }
-    
+
+    private void Start()
+    {
+        SongName[] list = _songsContent.GetComponentsInChildren<SongName>();
+        _songObjects = new List<SongName>();
+        foreach (SongName songName in list)
+        {
+            _songObjects.Add(songName);
+        }
+
+        SetAudioInfo();
+
+    }
 
     public void SetAudioInfo()
     {
@@ -153,11 +166,28 @@ public class UIManager : MonoBehaviour
         }
         
         SpawnSongNames(files);
+        ResizeContainer();
+    }
+    private void ResizeContainer()
+    {
+        // Получаем все дочерние элементы SongName
+        SongName[] songNames = _songsContent.GetComponentsInChildren<SongName>();
+
+        // Вычисляем требуемую высоту
+        float targetHeight = songNames.Length * 60f;
+
+        // Изменяем высоту контейнера
+        RectTransform rt = _songsContent.GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2(rt.sizeDelta.x, targetHeight);
     }
 
     private void SpawnSongNames(string[] files)
     {
-        _songObjects = new List<SongName>();
+        if (_songObjects == null)
+        {
+            _songObjects = new List<SongName>();
+        }
+        
 
         
         
@@ -183,6 +213,10 @@ public class UIManager : MonoBehaviour
     {
         for (int i = 0; i < _songObjects.Count; i++)
         {
+            if (_songObjects[i]._clip != null)
+            {
+                continue;
+            }
             Destroy(_songObjects[i].gameObject);
         }
     }
@@ -197,7 +231,16 @@ public class UIManager : MonoBehaviour
         {
             if (songObject.isSelected)
             {
-                GameManager.instance.SetAudioFromPath(songObject.GetPath());
+                Debug.LogError("TRACK" + songObject._clip);
+                if (songObject._clip != null)
+                {
+                    GameManager.instance.SetAudioFromClip(songObject._clip);
+                }
+                else
+                {
+                    GameManager.instance.SetAudioFromPath(songObject.GetPath());
+                }
+                
                 break;
             }
         }
