@@ -151,7 +151,7 @@ public class Line : MonoBehaviour
                             (GameManager.instance.AudioSource.clip.frequency * (60f / (_bpm * _step))));
             value = _sampledtime - _lastInterval;
             Move();
-            if ((value<0.2f || value>0.8f) && !tempIsTuct)
+            if ((value<=0.3f || value>=0.7f) && !tempIsTuct)
             {
                 isTact = true;
             }
@@ -170,8 +170,16 @@ public class Line : MonoBehaviour
 
 
         _curve[1].position = positions[firstIndex].position;
-        _curve[2].position = CalculateMiddlePoint(0.5f, 6f);
-
+        
+        /*if (lastIndex % 10 == 7)
+        {
+            _curve[2].position = CalculateMiddlePoint(0.5f, 0f);
+        }
+        else
+        {
+            
+        }*/
+_curve[2].position = CalculateMiddlePoint(0.5f, 6f);
         MinusValue();
     }
 
@@ -210,7 +218,7 @@ public class Line : MonoBehaviour
                             (GameManager.instance.AudioSource.clip.frequency * (60f / (_bpm * _step))));
             value = 1 - (_sampledtime - _lastInterval);
             Move();
-            if ((value<0.2f || value>0.8f) && !tempIsTuct)
+            if ((value<=0.3f || value>=0.7f) && !tempIsTuct)
             {
                 isTact = true;
                 tempIsTuct = true;
@@ -227,7 +235,15 @@ public class Line : MonoBehaviour
             _isStopped = true;
         }
         _curve[3].position = positions[lastIndex].position;
-        _curve[2].position = CalculateMiddlePoint(0.5f, 6f);
+        if (firstIndex % 10 == 6)
+        {
+            _curve[2].position = CalculateMiddlePoint(0.5f, 0f);
+        }
+        else
+        {
+            _curve[2].position = CalculateMiddlePoint(0.5f, 6f);
+        }
+        
 
         PlusValue();
     }

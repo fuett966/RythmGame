@@ -31,8 +31,8 @@ public class UIManager : MonoBehaviour
     
     [SerializeField] public GameObject _scoreButton;
     [SerializeField] public Image _mainButton;
-    [SerializeField] private GameObject _pauseButton;
-    [SerializeField] private GameObject _returnToMenuButton;
+    [SerializeField] public GameObject _pauseButton;
+    [SerializeField] public GameObject _returnToMenuButton;
     [SerializeField] public TextMeshProUGUI _scoreText;
     [SerializeField] private TextMeshProUGUI _timerToStartGameText;
     [Header("InGameMainButton")]
@@ -231,7 +231,7 @@ public class UIManager : MonoBehaviour
         {
             if (songObject.isSelected)
             {
-                Debug.LogError("TRACK" + songObject._clip);
+                //Debug.LogError("TRACK" + songObject._clip);
                 if (songObject._clip != null)
                 {
                     GameManager.instance.SetAudioFromClip(songObject._clip);

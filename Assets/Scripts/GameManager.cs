@@ -48,8 +48,9 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
+        Application.targetFrameRate = 60;
         DontDestroyOnLoad(gameObject);
+        
     }
 
     public void AnalyzeBPM()
@@ -60,15 +61,15 @@ public class GameManager : MonoBehaviour
         {
             _line._step = 1f;
         }
-        else if (_bpm > 200)
+        else if (_bpm > 150)
         {
             _line._step = 0.5f;
         }
-        else if(_bpm > 265)
+        else if(_bpm > 210)
         {
             _line._step = 0.25f;
         }
-        else if(_bpm > 340)
+        else if(_bpm > 300)
         {
             _line._step = 0.125f;
         }
@@ -92,6 +93,8 @@ public class GameManager : MonoBehaviour
     public void StartPlay()
     {
         UIManager.instance._mainButton.gameObject.SetActive(false);
+        UIManager.instance._pauseButton.gameObject.SetActive(false);
+        UIManager.instance._returnToMenuButton.gameObject.SetActive(false);
         StartTimer(3);
     }
 
@@ -148,6 +151,8 @@ public class GameManager : MonoBehaviour
         _audioSource.Play();
         _line.StartMove();
         UIManager.instance._mainButton.gameObject.SetActive(true);
+        /*UIManager.instance._pauseButton.gameObject.SetActive(true);
+        UIManager.instance._returnToMenuButton.gameObject.SetActive(true);*/
     }
 
     private void StartGame()
@@ -171,6 +176,10 @@ public class GameManager : MonoBehaviour
     public void PauseGame()
     {
         Debug.Log("Game paused");
+        /*if (!_audioSource.lis)
+        {
+            return;
+        }*/
         if (_audioSource.isPlaying)
         {
             _audioSource.Pause();

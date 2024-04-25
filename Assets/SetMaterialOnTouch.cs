@@ -9,9 +9,9 @@ public class SetMaterialOnTouch : MonoBehaviour
     public Material material;
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        /*if (other.CompareTag("Player"))
         {
             target.materials[0] = material;
-        }
+        }*/
     }
 }

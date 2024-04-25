@@ -40,6 +40,13 @@ public class LevelGenerator : MonoBehaviour
                 Destroy(characters[i]);
             }
         }
+        if (tubes != null && tubes.Count != 0)
+        {
+            for (int i = 0; i < tubes.Count; i++)
+            {
+                Destroy(tubes[i]);
+            }
+        }
 
     }
 
@@ -50,6 +57,7 @@ public class LevelGenerator : MonoBehaviour
         
         notes = new List<Transform>();
         characters = new List<GameObject>();
+        tubes = new List<GameObject>();
         int noteCount = (int) ((clipBeatPerMinute / (60 * stepModify)) * clipDuration)+1;
 
         
@@ -57,6 +65,32 @@ public class LevelGenerator : MonoBehaviour
         for (int i = 0; i < noteCount; i++)
         {
             GameObject noteTemp;
+
+            if ( (i % 10 == 6) && i != 0)
+            {
+                noteTemp = Instantiate(tube, startPosition, false);
+                tubes.Add(noteTemp);
+                Tube tubeObjectTemp = noteTemp.GetComponent<Tube>();
+                notes.Add(tubeObjectTemp.startPosition);
+                notes.Add(tubeObjectTemp.endPosition);
+                
+                
+                
+                noteTemp.transform.position = new Vector3(notes[i - 1].position.x - Random.Range(4, 7), notes[i - 1].position.y - Random.Range(3, 5), 0f);
+                if (Random.Range(0, 5) >= 3)
+                {
+                    noteTemp.transform.Rotate(new Vector3(0,0,-45));
+                }
+                else
+                {
+                    noteTemp.transform.Rotate(new Vector3(0,0,45));
+                }
+                
+                
+                
+                i++;
+                continue;
+            }
             noteTemp = Instantiate(note, startPosition, false); 
             
             
@@ -67,20 +101,14 @@ public class LevelGenerator : MonoBehaviour
                 noteTemp.SetActive(false);
                 continue;
             }
-            else
-            {
-                
-            }
-            
-
             if (i % 2 == 1)
             {
-                noteTemp.transform.position = new Vector3(notes[i - 1].position.x + Random.Range(5, 7), notes[i - 1].position.y - Random.Range(3, 5), 0f);
+                noteTemp.transform.position = new Vector3(notes[i - 1].position.x + Random.Range(4, 7), notes[i - 1].position.y - Random.Range(3, 5), 0f);
                 noteTemp.transform.Rotate(new Vector3(0,0,45));
             }
             else
             {
-                noteTemp.transform.position = new Vector3(notes[i - 1].position.x - Random.Range(5, 7), notes[i - 1].position.y - Random.Range(3, 5), 0f);
+                noteTemp.transform.position = new Vector3(notes[i - 1].position.x - Random.Range(4, 7), notes[i - 1].position.y - Random.Range(3, 5), 0f);
                 noteTemp.transform.Rotate(new Vector3(0,0,-45));
             }
             if (withHeroes && i % 8 == 0)
