@@ -58,15 +58,15 @@ public class GameManager : MonoBehaviour
     {
         _bpm = UniBpmAnalyzer.AnalyzeBpm(_audioSource.clip);
         _beatManager._bpm = _bpm;
-        if (_bpm < 100)
+        if (_bpm < 125)
         {
             _line._step = 1f;
         }
-        else if (_bpm < 180)
+        else if (_bpm < 200)
         {
             _line._step = 0.5f;
         }
-        else if(_bpm < 250)
+        else if(_bpm < 290)
         {
             _line._step = 0.25f;
         }
