@@ -13798,7 +13798,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 867326980}
-  smoothSpeed: 0.36
+  smoothSpeed: 0.27
   offset: {x: 0, y: 0, z: 0}
 --- !u!135 &1636243408
 SphereCollider:
@@ -13899,7 +13899,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _useTestBeat: 0
-  _pulseSize: 1.15
+  _pulseSize: 1.09
   _returnSpeed: 5
 --- !u!54 &1636243413
 Rigidbody:

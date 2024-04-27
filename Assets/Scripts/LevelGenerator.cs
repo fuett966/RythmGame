@@ -116,7 +116,7 @@ public class LevelGenerator : MonoBehaviour
                 GameObject heroObject = SpawnHeroWithType(heroesType);
                 characters.Add(heroObject);
                 heroObject.transform.position = noteTemp.transform.position;
-                heroObject.transform.position = new Vector3(heroObject.transform.position.x+2f , heroObject.transform.position.y,heroObject.transform.position.z+3f);
+                heroObject.transform.position = new Vector3(heroObject.transform.position.x+2f , heroObject.transform.position.y,heroObject.transform.position.z+1.5f);
                 heroObject.transform.rotation = new Quaternion(0f, 180f, 0f,0f);
                 heroObject.transform.localScale *= 2f;
             }
