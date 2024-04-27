@@ -9,81 +9,63 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    [Header("UI")]
-    [SerializeField]
-    private GameObject _loadingScreen;
-    [SerializeField]
-    private GameObject _songsPanel;
+    [Header("UI")] [SerializeField] private GameObject _loadingScreen;
+    [SerializeField] private GameObject _songsPanel;
 
-    
-    [SerializeField] 
-    private TwoButtonsChecker _autoPanel;
-    [SerializeField] 
-    private TwoButtonsCheckersContainer _heroesPanel;
-    [SerializeField] 
-    private GameObject _heroesEnablingPanel;
-    [SerializeField] 
-    private Button _startSongButton;
-    [SerializeField] 
-    private Button _addNewSongButton;
 
-    [Header("INGAMEUI")]
-    
-    [SerializeField] public GameObject _scoreButton;
+    [SerializeField] private TwoButtonsChecker _autoPanel;
+    [SerializeField] private TwoButtonsCheckersContainer _heroesPanel;
+    [SerializeField] private GameObject _heroesEnablingPanel;
+    [SerializeField] private Button _startSongButton;
+    [SerializeField] private Button _addNewSongButton;
+
+    [Header("INGAMEUI")] [SerializeField] public GameObject _scoreButton;
     [SerializeField] public Image _mainButton;
     [SerializeField] public GameObject _pauseButton;
     [SerializeField] public GameObject _returnToMenuButton;
     [SerializeField] public TextMeshProUGUI _scoreText;
     [SerializeField] private TextMeshProUGUI _timerToStartGameText;
-    [Header("InGameMainButton")]
-    [SerializeField] private Sprite _mainEnabled;
+
+    [Header("InGameMainButton")] [SerializeField]
+    private Sprite _mainEnabled;
+
     [SerializeField] private Sprite _mainDisabled;
-    
-    [Header("Parent Objects")] 
-    [SerializeField]
+
+    [Header("Parent Objects")] [SerializeField]
     private GameObject _songsContent;
-    
-    
-    
-    [Header("Text for UI")]
-    [SerializeField]
+
+
+    [Header("Text for UI")] [SerializeField]
     private string _scoreString = "";
-    
-    
-    
-    
-    [Header("Prefabs")] 
-    [SerializeField]
-    private GameObject _songContentPrefab;
+
+
+    [Header("Prefabs")] [SerializeField] private GameObject _songContentPrefab;
 
 
     private List<SongName> _songObjects;
 
 
-
-    [Header("Bools for debug")] 
-    [SerializeField]
+    [Header("Bools for debug")] [SerializeField]
     public bool _isAutoGame;
-    [SerializeField]
-    public bool _isUseHeroes;
+
+    [SerializeField] public bool _isUseHeroes;
 
     [SerializeField] public HeroesType _heroesType;
 
 
-
-
-
     public static UIManager instance = null;
-    void Awake () 
+
+    void Awake()
     {
-        if (instance == null) 
+        if (instance == null)
         {
             instance = this;
-        } 
-        else if(instance == this)
+        }
+        else if (instance == this)
         {
             Destroy(gameObject);
         }
+
         DontDestroyOnLoad(gameObject);
         //SetAudioInfo();
     }
@@ -103,7 +85,7 @@ public class UIManager : MonoBehaviour
             _mainButton.sprite = _mainEnabled;
         }
     }
-    
+
 
     public void SetStartPlayButtonActive(bool value)
     {
@@ -114,6 +96,7 @@ public class UIManager : MonoBehaviour
     {
         _scoreText.text = _scoreString + score.ToString();
     }
+
     public void ChangeTimerText(string time)
     {
         _timerToStartGameText.text = time;
@@ -123,10 +106,12 @@ public class UIManager : MonoBehaviour
     {
         _isAutoGame = value;
     }
+
     public void SetUseHeroes(bool value)
     {
         _isUseHeroes = value;
     }
+
     public void SetHeroesType(HeroesType type)
     {
         _heroesType = type;
@@ -153,28 +138,35 @@ public class UIManager : MonoBehaviour
     public void SetAudioInfo()
     {
         string path = Path.Combine(Application.persistentDataPath, "Audio");
-            //Application.dataPath + "/../Assets/StreamingAssets/Audio";
+        //Application.dataPath + "/../Assets/StreamingAssets/Audio";
         if (!FileBrowserHelpers.DirectoryExists(Application.persistentDataPath + "Audio"))
         {
             FileBrowserHelpers.CreateFolderInDirectory(Application.persistentDataPath, "Audio");
         }
+
         string[] files = Directory.GetFiles(path);
-        
+
         if (_songObjects != null && _songObjects.Count > 0)
         {
             ResetSongNames();
         }
-        
+
         SpawnSongNames(files);
         ResizeContainer();
     }
+
     private void ResizeContainer()
     {
         RectTransform rt = _songsContent.GetComponent<RectTransform>();
         SongName[] songNames = _songsContent.GetComponentsInChildren<SongName>();
         float targetHeight = songNames.Length * songNames[0]._transform.sizeDelta.y;
-        
+
         rt.sizeDelta = new Vector2(rt.sizeDelta.x, targetHeight);
+    }
+
+    private void ResizeSongContainer(SongName song)
+    {
+        song._transform.localScale = new Vector3(1, 1, 1);
     }
 
     private void SpawnSongNames(string[] files)
@@ -183,22 +175,21 @@ public class UIManager : MonoBehaviour
         {
             _songObjects = new List<SongName>();
         }
-        
 
-        
-        
+
         for (int i = 0; i < files.Length; i++)
         {
             if (!GameManager.instance.IsAudioFile(files[i]))
             {
                 continue;
             }
-            
+
             GameObject song = Instantiate(_songContentPrefab);
             song.transform.SetParent(_songsContent.transform);
-            
+            ResizeSongContainer(song.GetComponent<SongName>());
+
             _songObjects.Add(song.GetComponent<SongName>());
-            
+
             song.GetComponent<SongName>().ChangeText(Path.GetFileName(files[i]));
             song.GetComponent<SongName>().SetName(Path.GetFileName(files[i]));
             song.GetComponent<SongName>().SetPath(files[i]);
@@ -213,6 +204,7 @@ public class UIManager : MonoBehaviour
             {
                 continue;
             }
+
             Destroy(_songObjects[i].gameObject);
         }
     }
@@ -223,6 +215,7 @@ public class UIManager : MonoBehaviour
         {
             return;
         }
+
         foreach (SongName songObject in _songObjects)
         {
             if (songObject.isSelected)
@@ -236,10 +229,11 @@ public class UIManager : MonoBehaviour
                 {
                     GameManager.instance.SetAudioFromPath(songObject.GetPath());
                 }
-                
+
                 break;
             }
         }
+
         _songsPanel.SetActive(false);
     }
 
@@ -265,9 +259,10 @@ public class UIManager : MonoBehaviour
                 songObject.SetUnselected();
             }
         }
+
         SetStartPlayButtonActive(false);
     }
-    
+
     public enum HeroesType
     {
         Dota2,
