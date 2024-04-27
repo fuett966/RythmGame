@@ -85,7 +85,7 @@ public class UIManager : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
-        SetAudioInfo();
+        //SetAudioInfo();
     }
 
     public void SwitchActiveMainbutton()
@@ -170,14 +170,10 @@ public class UIManager : MonoBehaviour
     }
     private void ResizeContainer()
     {
-        // Получаем все дочерние элементы SongName
-        SongName[] songNames = _songsContent.GetComponentsInChildren<SongName>();
-
-        // Вычисляем требуемую высоту
-        float targetHeight = songNames.Length * 60f;
-
-        // Изменяем высоту контейнера
         RectTransform rt = _songsContent.GetComponent<RectTransform>();
+        SongName[] songNames = _songsContent.GetComponentsInChildren<SongName>();
+        float targetHeight = songNames.Length * songNames[0]._transform.sizeDelta.y;
+        
         rt.sizeDelta = new Vector2(rt.sizeDelta.x, targetHeight);
     }
 

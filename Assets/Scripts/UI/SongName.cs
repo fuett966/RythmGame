@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -16,6 +17,12 @@ public class SongName : MonoBehaviour
     [SerializeField] private Sprite _selectedColor;
     [SerializeField] private Sprite _normalColor;
     
+    public RectTransform _transform;
+
+    private void OnEnable()
+    {
+        _transform = GetComponent<RectTransform>();
+    }
 
     public bool isSelected;
     
